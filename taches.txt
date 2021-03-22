@@ -1,0 +1,16 @@
+Partie organisation :
+
+script bash pour effectuer les tests (David)
+makefile (Mathieu)
+
+Partie développement :
+
+ARBRE ABSTRAIT
+partie expression 	(David)
+partie instruction 	(David)
+partie déclaration pour les variables globales (Mathieu)
+partie déclaration pour les variables locales (presque fini) (Mathieu)
+
+TABLE DES SYMBOLES 
+
+après
