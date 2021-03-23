@@ -5,7 +5,12 @@ int r1,b,s,c,r2 ;
 int b;
 char letter, digit, punct;
 
-int variables(void){
+struct hello {
+	int t1, t2, t3;
+	char b1;
+};
+
+int variables(int a){
     int r1,b,s,c,r2 ;
 	int b;
 	char letter, digit, punct;

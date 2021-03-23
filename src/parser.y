@@ -32,17 +32,37 @@
 %token OR AND STRUCT IF WHILE RETURN VOID PRINT READC READE
 %precedence ')'
 %precedence ELSE
-%type <node> DeclVars Declarateurs
+%type <node> DeclVars Declarateurs TypesVars DeclChamps Prog
+%type <node> DeclFoncts DeclFonct Corps Parametres ListTypVar EnTeteFonct
 %type <type> Type
 
 %%
 
-Prog:  TypesVars DeclFoncts
+Prog:  TypesVars DeclFoncts {
+		$$ = makeNode(Program);
+		Node* node = makeNode(FuncDeclList);
+		addChild(node, $2);
+		addChild($$, $1);
+		addChild($$, node);
+		printTree($$);
+		deleteTree($$);
+	}
     ;
 TypesVars:
-       TypesVars Type Declarateurs ';'
-    |  TypesVars STRUCT IDENT '{' DeclChamps '}' ';'
-    |  %empty
+       TypesVars Type Declarateurs ';' {
+		$1 = makeNode(VarDeclList);
+		addChild($1, $3);
+		addChild($$, $1);
+	   }
+    |  TypesVars STRUCT IDENT '{' DeclChamps '}' ';' {
+		$1 = makeNode(StructType);
+		strcpy($1->u.identifier, yylval.ident);
+		addChild($1, $5);
+		addChild($$, $1);
+	}
+    |  %empty {
+		$$ = makeNode(VarDeclList);
+	}
     ;
 Type:
 	  SIMPLETYPE {
@@ -56,7 +76,7 @@ Declarateurs:
        Declarateurs ',' IDENT {
 	   		$$ = $1;
 			Node* node = makeNode(Identifier);
-			strcpy(node->u.identifier, yytext);
+			strcpy(node->u.identifier, yylval.ident);
 			addSibling($$, node);
 			if($<type>0 == 0)
 				alreadyIn(yylval.ident);
@@ -64,39 +84,74 @@ Declarateurs:
 	   }
     |  IDENT {
 	   		$$ = makeNode(Identifier);
-			strcpy($$->u.identifier, yytext);
+			strcpy($$->u.identifier, yylval.ident);
 			if($<type>0 == 0)
 				alreadyIn(yylval.ident);
 			addVar(yylval.ident, $<type>0);
 	}
     ;
 DeclChamps :
-       DeclChamps SIMPLETYPE Declarateurs ';'
-    |  SIMPLETYPE Declarateurs ';'
+       DeclChamps SIMPLETYPE Declarateurs ';' {
+	   		$$ = makeNode(VarDeclList);
+			addChild($$, $3);
+			addSibling($$, $1);
+	   }
+    |  SIMPLETYPE Declarateurs ';' {
+			$$ = makeNode(VarDeclList);
+			addChild($$, $2);
+	}
     ;
 DeclFoncts:
-       DeclFoncts DeclFonct
-    |  DeclFonct
+       DeclFoncts DeclFonct {
+	   		$$ = $1;
+			addSibling($$, $2);
+	   }
+    |  DeclFonct {
+			$$ = $1;
+	}
     ;
 DeclFonct:
-       EnTeteFonct Corps
+       EnTeteFonct Corps {
+	   		$$ = makeNode(FuncDecl);
+			addChild($$, $1);
+			addChild($$, $2);
+	   }
     ;
 EnTeteFonct:
-       Type IDENT '(' Parametres ')'
-    |  VOID IDENT '(' Parametres ')'
+       Type IDENT '(' Parametres ')' {
+	   		$$ = makeNode(EnTete);
+			strcpy($$->u.identifier, yylval.ident);
+			addChild($$, $4);
+	   }
+    |  VOID IDENT '(' Parametres ')' {
+	   		$$ = makeNode(EnTete);
+			strcpy($$->u.identifier, yylval.ident);
+			addChild($$, $4);
+	 }
     ;
 Parametres:
-       VOID
-    |  ListTypVar
+       VOID	{
+			$$ = NULL;
+	   }
+    |  ListTypVar {
+			$$ = makeNode(TypeDeclList);
+			addChild($$, $1);
+	}
     ;
 ListTypVar:
-       ListTypVar ',' Type IDENT
-    |  Type IDENT
+       ListTypVar ',' Type IDENT {
+	   		$$ = makeNode(TypeDecl);
+			strcpy($$->u.identifier, yylval.ident);
+			addSibling($$, $1);
+	   }
+    |  Type IDENT {
+			$$ = makeNode(TypeDecl);
+			strcpy($$->u.identifier, yylval.ident);
+	}
     ;
 Corps: '{' DeclVars SuiteInstr '}' { 
-		printTree($2);
-		deleteTree($2); 
-		printTable();
+	 	$$ = makeNode(Corps);
+		addChild($$, $2);
 	}
     ;
 DeclVars:
