@@ -18,11 +18,36 @@ static const char *StringFromKind[] = {
   "Identifier",
   "StructType",
   "Type",
-  "Corps"
+  "Corps",
+  "ListExp",
+  "Expr",
+  "FunctionCall",
+  "StructField",
+  "ListInstr",
+  "Instr",
+  "Bloc"
   
   /* and all other node labels */
   /* The list must coincide with the enum in abstract-tree.h */
   /* To avoid listing them twice, see https://stackoverflow.com/a/10966395 */
+};
+
+static const char *StringFromOp[] = {
+	"&&",
+	"||",
+	"+",
+	"-",
+	"/",
+	"*",
+	"%",
+	">",
+	">=",
+	"<",
+	"<=",
+	"==",
+	"!=",
+	"!"
+
 };
 
 Node *makeNode(Kind kind) {
@@ -82,6 +107,8 @@ void printTree(Node *node) {
     case EnTete: printf(": %s", node->u.identifier); break;
     case TypeDecl: printf(": %s", node->u.identifier); break;
     case Type: printf(": %s", node->u.identifier); break;
+    case Expr: printf(": %s", StringFromOp[node->u.op]); break;
+    case FunctionCall: printf(": %s", node->u.identifier); break;
     default: break;
   }
   printf("\n");

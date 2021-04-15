@@ -1,3 +1,5 @@
+#ifndef __ABSTRACT_TREE__
+#define __ABSTRACT_TREE__
 /* abstract-tree.h */
 
 typedef enum {
@@ -13,18 +15,43 @@ typedef enum {
   Identifier,
   StructType,
   Type,
-  Corps
+  Corps,
+  ListExp,
+  Expr,
+  FunctionCall,
+  StructField,
+  ListInstr,
+  Instr,
+  Bloc
+
   /* and allother node labels */
   /* The list must coincide with the strings in abstract-tree.c */
   /* To avoid listing them twice, see https://stackoverflow.com/a/10966395 */
 } Kind;
+
+typedef enum {
+	And,
+	Or,
+	Add,
+	Sub,
+	Div,
+	Mul,
+	Mod,
+	Greater,
+	Gequal,
+	Lower,
+	Lequal,
+	Equal,
+	Diff,
+	Neg
+} Op;
 
 typedef struct Node {
   Kind kind;
   union {
     int integer;
 	int type;
-	int op;
+	Op op;
     char character;
     char identifier[64];
   } u;
@@ -41,3 +68,5 @@ void printTree(Node *node);
 #define FIRSTCHILD(node) node->firstChild
 #define SECONDCHILD(node) node->firstChild->nextSibling
 #define THIRDCHILD(node) node->firstChild->nextSibling->nextSibling
+
+#endif 

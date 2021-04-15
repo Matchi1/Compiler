@@ -12,7 +12,7 @@ PARSER=parser
 SRC_PATH = src/
 OBJ_PATH = obj/
 BIN_PATH = bin/
-OBJ_FILES = $(PARSER).tab.o lex.yy.o abstract-tree.o decl-var.o
+OBJ_FILES = $(PARSER).tab.o lex.yy.o abstract-tree.o decl-var.o Option.o
 EXEC = tpcc
 CURRENT_DIR=$(notdir $(shell pwd))
 ZIP_FILE = Compiler_L3_CHAN_ARAVINDAN.zip
@@ -38,6 +38,9 @@ abstract-tree.o: $(SRC_PATH)abstract-tree.c
 decl-var.o: $(SRC_PATH)decl-var.c
 	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
 
+Option.o: $(SRC_PATH)Option.c
+	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
+
 %.o: %.c
 	@echo Compile all the C files necessary for the execution file\n
 	$(CC) -o $(OBJ_PATH)$@ -c $(SRC_PATH)$< $(CFLAGS)
@@ -50,7 +53,7 @@ clean:
 
 mrproper: clean
 	rm -f $(BIN_PATH)*
-	rm -f $(ZIP_FILE)
+	rm -f $(ZIP_FILE) *.log
 
 zip:
 	cd ..; zip -r $(CURRENT_DIR)/$(ZIP_FILE) $(CURRENT_DIR) -x '*.git*' -x '.gitignore'

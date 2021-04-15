@@ -17,9 +17,10 @@ int variables(int a){
 }
 
 int main(void)  {
-   r1=12;
-   r2=24;
-   b=r1+r2;
+   1&&16==(-2+5)/(2*1)+(101+2-3+6)/(1+2-3+7);
+   b=r1*r2;
+   b.hello=1;
    punct='.';
+   variables(1+1+1+1);
    return b;
 }
