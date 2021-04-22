@@ -3,16 +3,22 @@
 #ifndef __STENTRY__
 #define __STENTRY__
 #define MAXNAME 32
+#define MAXSYMBOLS 256
+
+#include "abstract-tree.h"
 
 typedef struct {
     char name[MAXNAME];
-    int type;
+    char type[MAXNAME];
 } STentry;
 
-void check(int token);
-void addVar(const char name[], int type);
-void syntaxError();
+typedef struct {
+	STentry header;
+	int STsize;
+	STentry symbolTable[MAXSYMBOLS];
+} STfunc;
+
 void printTable();
-int alreadyIn(char* ident);
+void create_ST(Node *tree);
 
 #endif 

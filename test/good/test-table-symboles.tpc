@@ -10,17 +10,19 @@ struct hello {
 	char b1;
 };
 
-int variables(int a){
-    int r1,b,s,c,r2 ;
+void variables(int a, char b){
+	int r1,b,s,c,r2 ;
 	int b;
 	char letter, digit, punct;
 }
 
 int main(void)  {
-   1&&16==(-2+5)/(2*1)+(101+2-3+6)/(1+2-3+7);
-   b=r1*r2;
-   b.hello=1;
-   punct='.';
-   variables(1+1+1+1);
-   return b;
+	int c, d;
+	1&&16==(-2+5)/(2*1)+(101+2-3+6)/(1+2-3+7);
+	b=r1*r2;
+	b.hello=1;
+	punct='.';
+	variables(1+1+1+1);
+  b;
+	return b;
 }

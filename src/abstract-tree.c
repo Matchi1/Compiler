@@ -9,7 +9,7 @@ static const char *StringFromKind[] = {
   "Program",
   "VarDeclList",
   "FuncDeclList",
-  "FuncDecl",
+  "DeclFunc",
   "TypeDeclList",
   "TypeDecl",
   "EnTete",
@@ -25,7 +25,9 @@ static const char *StringFromKind[] = {
   "StructField",
   "ListInstr",
   "Instr",
-  "Bloc"
+  "Bloc",
+  "TypesVars",
+  "DeclVars"
   
   /* and all other node labels */
   /* The list must coincide with the enum in abstract-tree.h */
@@ -47,7 +49,18 @@ static const char *StringFromOp[] = {
 	"==",
 	"!=",
 	"!"
+};
 
+static const char *StringFromInstrType[] = {
+	"Affectation",
+	"Reade",
+	"Readc",
+	"Print",
+	"If",
+	"IfElse",
+	"While",
+	"",
+	"Return"
 };
 
 Node *makeNode(Kind kind) {
@@ -109,6 +122,7 @@ void printTree(Node *node) {
     case Type: printf(": %s", node->u.identifier); break;
     case Expr: printf(": %s", StringFromOp[node->u.op]); break;
     case FunctionCall: printf(": %s", node->u.identifier); break;
+    case Instr: printf(": %s", StringFromInstrType[node->u.instruction]); break;
     default: break;
   }
   printf("\n");

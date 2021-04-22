@@ -42,7 +42,7 @@ Option.o: $(SRC_PATH)Option.c
 	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
 
 %.o: %.c
-	@echo Compile all the C files necessary for the execution file\n
+	@echo Compile all the C files necessary for the execution file
 	$(CC) -o $(OBJ_PATH)$@ -c $(SRC_PATH)$< $(CFLAGS)
 
 clean:

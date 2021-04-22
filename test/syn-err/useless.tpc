@@ -1,0 +1,15 @@
+/*#include <stdio.h>*/
+/*Manque le ; */
+
+void inutile(char useless){
+	print(' ');
+}
+
+int pourquoi(void){
+	int chiffre                                 
+}
+
+int main(void){
+	/*ceci est un commentaire*/
+	inutile('c');
+}

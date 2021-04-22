@@ -1,0 +1,14 @@
+/*#include <stdio.h>*/
+
+int addition(int a, int b){
+	return a+b;
+}
+
+int main(void){
+	int a,b;
+	a = 2;
+	b = 2;
+	b = a%b;
+	print(addition(a,b));
+	return 0;
+}

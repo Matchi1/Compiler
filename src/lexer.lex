@@ -6,8 +6,8 @@
 	#include "abstract-tree.h"
 	char text_line[100];
 	int index_text = 0;
-	int lineno=1;
-	int charno=0;
+	int lineno = 1;
+	int charno = 0;
 	char ident[25];
 	#undef YY_INPUT
 	#define YY_INPUT(buf, result, max_size){ \
@@ -30,9 +30,9 @@
 %x SHORT_COMMENT LONG_COMMENT
 %%
 [ \t\r]+			{ charno += yyleng;}
-\n					{ charno = 0; lineno++;}
-"/*"				{ charno += yyleng;BEGIN LONG_COMMENT; }
-"//"				{ charno += yyleng;BEGIN SHORT_COMMENT; }
+\n					{ charno = 0; lineno++; index_text = 0;}
+"/*"				{ charno += yyleng; BEGIN LONG_COMMENT; }
+"//"				{ charno += yyleng; BEGIN SHORT_COMMENT; }
 &&					{ yylval.op = And; charno += yyleng;return AND; }
 "||"				{ yylval.op = Or; charno += yyleng;return OR; }
 "+"					{ yylval.op = Add; charno += yyleng; return ADDSUB; }

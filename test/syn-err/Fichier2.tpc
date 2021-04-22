@@ -1,0 +1,24 @@
+/*
+Test des tokens suivants:
+	- TYPE
+	- IDENT
+	- READE
+	- READC
+	- RETURN 
+	- ADDSUB
+	- DIVSTAR
+*/
+// #include <stdio.h>
+// #include <stdlib.h>
+
+int main(void){
+	int value;
+	double value2;
+	int result;
+
+	reade(&value);
+	readc(&value2);
+	result = value * value + value2;
+	
+	return 0;	
+}

@@ -6,15 +6,16 @@
 	extern int lineno;
 	extern int charno;
 	extern char ident[25];
-	int yylex();
-	void yyerror(const char *);
 	extern char* yytext;
 	extern char text_line[100];
+	int yylex();
+	void yyerror(const char *);
 %}
 
 %code requires {
 	#include "abstract-tree.h"
 	#include "decl-var.h"
+	#include "verif_type.h"
 	#include "Option.h"
 }
 
@@ -66,16 +67,18 @@ TypesVars:
 		addChild($$, $1);
 	}
     |  %empty {
-		$$ = makeNode(VarDeclList);
+		$$ = makeNode(TypesVars);
 	}
     ;
 Type:
 	  SIMPLETYPE {
 		$$ = makeNode(Type);
+		$$->lineno = lineno;
 		strcpy($$->u.identifier, yylval.type);
 	  }
 	| STRUCT IDENT {
 		$$ = makeNode(Type);
+		$$->lineno = lineno;
 		strcpy($$->u.identifier, yylval.type);
 	  }
     ;
@@ -83,11 +86,13 @@ Declarateurs:
        Declarateurs ',' IDENT {
 	   		$$ = $1;
 			Node* node = makeNode(Identifier);
+			node->lineno = lineno;
 			strcpy(node->u.identifier, ident);
 			addSibling($$, node);
 	   }
     |  IDENT {
 	   		$$ = makeNode(Identifier);
+			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	}
     ;
@@ -107,6 +112,7 @@ DeclChamps :
 DeclChampsAux :
 	   %empty {
 			$$ = makeNode(Type);
+			$$->lineno = lineno;
 			strcpy($$->u.identifier, yylval.type);
 	   }
 DeclFoncts:
@@ -114,13 +120,11 @@ DeclFoncts:
 	   		$$ = $1;
 			addSibling($$, $2);
 	   }
-    |  DeclFonct {
-			$$ = $1;
-	}
+    |  DeclFonct
     ;
 DeclFonct:
        EnTeteFonct Corps {
-	   		$$ = makeNode(FuncDecl);
+	   		$$ = makeNode(DeclFunc);
 			addChild($$, $1);
 			addChild($$, $2);
 	   }
@@ -139,6 +143,7 @@ EnTeteFonct:
 SaveIdent:
 	   %empty {
 	   		$$ = makeNode(EnTete);
+			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	   }
 Parametres:
@@ -152,15 +157,21 @@ Parametres:
     ;
 ListTypVar:
        ListTypVar ',' Type IDENT {
-	   		$$ = makeNode(TypeDecl);
-			strcpy($$->u.identifier, ident);
+			$$ = makeNode(TypeDecl);
+			addChild($$, $3);
+			Node* node = makeNode(Identifier);
+			node->lineno = lineno;
+			strcpy(node->u.identifier, ident);
+			addChild($$, node);
 			addSibling($$, $1);
-			addSibling($$, $3);
 	   }
     |  Type IDENT {
 			$$ = makeNode(TypeDecl);
-			strcpy($$->u.identifier, ident);
-			addSibling($$, $1);
+			addChild($$, $1);
+			Node* node = makeNode(Identifier);
+			node->lineno = lineno;
+			strcpy(node->u.identifier, ident);
+			addChild($$, node);
 	}
     ;
 Corps: '{' DeclVars SuiteInstr '}' { 
@@ -173,11 +184,11 @@ DeclVars:
        DeclVars Type Declarateurs ';' {
 	   $1 = makeNode(VarDeclList);
 	   addChild($$, $1);
-	   addChild($1, $3);
 	   addChild($1, $2);
+	   addChild($1, $3);
 	}
     |  %empty	{
-		$$ = makeNode(VarDeclList);
+		$$ = makeNode(DeclVars);
 	}
     ;
 SuiteInstr:
@@ -192,40 +203,60 @@ SuiteInstr:
 Instr:
        LValue '=' Exp ';' {
 		$$ = makeNode(Instr);   	
+		$$->lineno = lineno;
+		$$->u.instruction = Affect;
 		addChild($$, $1);
 		addChild($$, $3);
 	}
     |  READE '(' LValue ')' ';' {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Reade;
 		addChild($$, $3);
 	}
     |  READC '(' LValue ')' ';' {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Readc;
 		addChild($$, $3);
 	}
     |  PRINT '(' Exp ')' ';' {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Print;
 		addChild($$, $3);
 	}
     |  IF '(' Exp ')' Instr {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = If;
 	}
     |  IF '(' Exp ')' Instr ELSE Instr {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = IfElse;
 	}
     |  WHILE '(' Exp ')' Instr {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = While;
 	}
     |  Exp ';'	{
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Vide;
 		addChild($$, $1);
 	}
     |  RETURN Exp ';' {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Return;
 		addChild($$, $2);
 	}
     |  RETURN ';' {
 		$$ = makeNode(Instr);
+		$$->lineno = lineno;
+		$$->u.instruction = Return;
 	}
     |  '{' SuiteInstr '}' {
 		$$ = makeNode(Bloc);
@@ -303,23 +334,27 @@ F   :  ADDSUB SaveOp F {
 SaveOp:
 	   %empty {
 		$$ = makeNode(Expr);
+		$$->lineno = lineno;
 		$$->u.op = yylval.op;
 	}
 	;
 CallName:
 	   %empty {
 	   		$$ = makeNode(FunctionCall);
+			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	   }
 LValue:
        IDENT {
 		$$ = makeNode(Identifier);
+		$$->lineno = lineno;
 		strcpy($$->u.identifier, ident);
 	}
     |  IDENT LValueAux '.' IDENT {
        Node* node = makeNode(Identifier);
        strcpy(node->u.identifier, ident);
        $$ = makeNode(StructField); 
+		$$->lineno = lineno;
        addChild($$, node);
        addChild($$, $2);
 	}
@@ -327,6 +362,7 @@ LValue:
 LValueAux:
 	   %empty	{
        $$ = makeNode(Identifier);  
+	   $$->lineno = lineno;
        strcpy($$->u.identifier, ident);
     }
 Arguments:
@@ -335,15 +371,14 @@ Arguments:
     ;
 ListExp:
        ListExp ',' Exp {
-	   	addChild($1, $3);
 		$$ = $1;
-	   }
+	   	addChild($$, $3);
+	}
     |  Exp	{
 		$$ = makeNode(ListExp);
 		addChild($$, $1);
 	}
     ;
-
 %%
 
 /* 
@@ -376,10 +411,12 @@ int main(int argc, char** argv) {
 	init_options(&opts);
 	check_options(argc, argv, &opts);
 	ret_value = yyparse();
+	if(root != NULL)
+		create_ST(root);
 
 	if(opts.tree)
 		printTree(root);
-	else if(opts.st)
+	if(opts.st)
 		printTable();
 
 	return ret_value;
