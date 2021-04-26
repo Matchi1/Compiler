@@ -19,6 +19,7 @@ fi
 echo -e "\n\n"
 
 # Good tests
+echo -e "\nGood tests" >> $result
 for i in $(ls $good)
 do
 	echo "./$exec < $good/$i"
@@ -28,27 +29,33 @@ do
     echo "Résultat attendus pour "$i": 0, résultat obtenu: "$? >> $result
 done
 
-# Semantic error tests
-for i in $(ls $semerr)
-do
-	echo "./$exec < $semerr/$i"
-    ./$exec < $semerr/$i
-	# renvoie le résultat dans le fichier 'resultat' sous la
-	# forme 'nom de fichier' 'résultat de l'analyse du fichier (0 ou 1)'
-    echo "Résultat attendus pour "$i": 1, résultat obtenu: "$? >> $result
-done
-
 # Syntax error tests
+echo -e "\nSyntax error tests" >> $result
 for i in $(ls $synerr)
 do
 	echo "./$exec < $synerr/$i"
     ./$exec < $synerr/$i
 	# renvoie le résultat dans le fichier 'resultat' sous la
 	# forme 'nom de fichier' 'résultat de l'analyse du fichier (0 ou 1)'
+    echo "Résultat attendus pour "$i": 1, résultat obtenu: "$? >> $result
+done
+
+# Semantic error tests
+echo -e "\nSemantic error tests" >> $result
+for i in $(ls $semerr)
+do
+	echo "./$exec < $semerr/$i"
+    ./$exec < $semerr/$i
+	# renvoie le résultat dans le fichier 'resultat' sous la
+	# forme 'nom de fichier' 'résultat de l'analyse du fichier (0 ou 1)'
     echo "Résultat attendus pour "$i": 2, résultat obtenu: "$? >> $result
 done
 
 # Warning tests
+echo -e "\nWarning tests" >> $result
+echo "Exécution de la commande ./$exec -a" >> $result
+./$exec -a
+echo "Résultat attendus : 3, résultat obtenu: "$? >> $result
 for i in $(ls $warn)
 do
 	echo "./$exec < $warn/$i"

@@ -2,7 +2,7 @@
 #define __OPTION__
 
 typedef struct {
-	int tree, st;
+	int tree, st, help;
 }Options;
 
 void init_options(Options* opts);

@@ -16,6 +16,8 @@ OBJ_FILES = $(PARSER).tab.o lex.yy.o abstract-tree.o decl-var.o Option.o
 EXEC = tpcc
 CURRENT_DIR=$(notdir $(shell pwd))
 ZIP_FILE = Compiler_L3_CHAN_ARAVINDAN.zip
+PREVIEW = ProjetCompilationL3_CHAN_ARAVINDAN
+TAR_FILE = ProjetCompilationL3_CHAN_ARAVINDAN.tar.gz
 
 all: $(EXEC) clean
 
@@ -53,7 +55,14 @@ clean:
 
 mrproper: clean
 	rm -f $(BIN_PATH)*
-	rm -f $(ZIP_FILE) *.log
+	rm -f $(TAR_FILE) $(ZIP_FILE) *.log
+
+copy:
+	mkdir $(PREVIEW)
+	rsync -av . $(PREVIEW) --exclude .git --exclude *.odt --exclude .gitignore
 
 zip:
-	cd ..; zip -r $(CURRENT_DIR)/$(ZIP_FILE) $(CURRENT_DIR) -x '*.git*' -x '.gitignore'
+	cd ..; zip -r $(CURRENT_DIR)/$(ZIP_FILE) $(CURRENT_DIR) -x '*.git*' -x '.gitignore' -x '*.odt*'
+
+tar:
+	cd ..; tar -cvf $(CURRENT_DIR)/$(TAR_FILE) $(CURRENT_DIR)

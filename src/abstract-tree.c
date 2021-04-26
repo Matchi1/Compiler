@@ -8,26 +8,26 @@ extern int lineno;       /* from lexer */
 static const char *StringFromKind[] = {
   "Program",
   "VarDeclList",
-  "FuncDeclList",
-  "DeclFunc",
+  "VarsDecl",
   "TypeDeclList",
   "TypeDecl",
-  "EnTete",
+  "FuncDeclList",
+  "FuncDecl",
+  "InstrList",
+  "Instr",
+  "ExprList",
+  "Expr",
+  "Header",
   "IntLiteral",
-  "Charliteral",
+  "CharLiteral",
   "Identifier",
   "StructType",
   "Type",
-  "Corps",
-  "ListExp",
-  "Expr",
-  "FunctionCall",
+  "Body",
+  "FuncCall",
   "StructField",
-  "ListInstr",
-  "Instr",
   "Bloc",
-  "TypesVars",
-  "DeclVars"
+  "TypesVars"
   
   /* and all other node labels */
   /* The list must coincide with the enum in abstract-tree.h */
@@ -52,7 +52,7 @@ static const char *StringFromOp[] = {
 };
 
 static const char *StringFromInstrType[] = {
-	"Affectation",
+	"Asign",
 	"Reade",
 	"Readc",
 	"Print",
@@ -117,11 +117,11 @@ void printTree(Node *node) {
     case CharLiteral: printf(": '%c'", node->u.character); break;
     case Identifier: printf(": %s", node->u.identifier); break;
     case StructType: printf(": %s", node->u.identifier); break;
-    case EnTete: printf(": %s", node->u.identifier); break;
+    case Header: printf(": %s", node->u.identifier); break;
     case TypeDecl: printf(": %s", node->u.identifier); break;
     case Type: printf(": %s", node->u.identifier); break;
     case Expr: printf(": %s", StringFromOp[node->u.op]); break;
-    case FunctionCall: printf(": %s", node->u.identifier); break;
+    case FuncCall: printf(": %s", node->u.identifier); break;
     case Instr: printf(": %s", StringFromInstrType[node->u.instruction]); break;
     default: break;
   }

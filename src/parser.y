@@ -124,7 +124,7 @@ DeclFoncts:
     ;
 DeclFonct:
        EnTeteFonct Corps {
-	   		$$ = makeNode(DeclFunc);
+	   		$$ = makeNode(FuncDecl);
 			addChild($$, $1);
 			addChild($$, $2);
 	   }
@@ -142,7 +142,7 @@ EnTeteFonct:
     ;
 SaveIdent:
 	   %empty {
-	   		$$ = makeNode(EnTete);
+	   		$$ = makeNode(Header);
 			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	   }
@@ -175,7 +175,7 @@ ListTypVar:
 	}
     ;
 Corps: '{' DeclVars SuiteInstr '}' { 
-	 	$$ = makeNode(Corps);
+	 	$$ = makeNode(Body);
 		addChild($$, $2);
 		addChild($$, $3);
 	}
@@ -188,7 +188,7 @@ DeclVars:
 	   addChild($1, $3);
 	}
     |  %empty	{
-		$$ = makeNode(DeclVars);
+		$$ = makeNode(VarsDecl);
 	}
     ;
 SuiteInstr:
@@ -197,14 +197,14 @@ SuiteInstr:
 		addChild($$, $2);
 	}
     |  %empty {
-		$$ = makeNode(ListInstr);
+		$$ = makeNode(InstrList);
 	}
     ;
 Instr:
        LValue '=' Exp ';' {
 		$$ = makeNode(Instr);   	
 		$$->lineno = lineno;
-		$$->u.instruction = Affect;
+		$$->u.instruction = Asign;
 		addChild($$, $1);
 		addChild($$, $3);
 	}
@@ -244,7 +244,7 @@ Instr:
     |  Exp ';'	{
 		$$ = makeNode(Instr);
 		$$->lineno = lineno;
-		$$->u.instruction = Vide;
+		$$->u.instruction = Void;
 		addChild($$, $1);
 	}
     |  RETURN Exp ';' {
@@ -340,7 +340,7 @@ SaveOp:
 	;
 CallName:
 	   %empty {
-	   		$$ = makeNode(FunctionCall);
+	   		$$ = makeNode(FuncCall);
 			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	   }
@@ -375,7 +375,7 @@ ListExp:
 	   	addChild($$, $3);
 	}
     |  Exp	{
-		$$ = makeNode(ListExp);
+		$$ = makeNode(ExprList);
 		addChild($$, $1);
 	}
     ;
@@ -398,6 +398,14 @@ void display_error(){
 	printf("^\n");
 }
 
+void printHelp(){
+	printf("Usage : ./tpcc [OPTIONS]\n\n");
+	printf("OPTIONS\n");
+	printf("\t -t, --tree : Display the generated abstract tree\n");
+	printf("\t -s, --symtabs : Display the generated symbol tables\n");
+	printf("\t -h, --help : Display help text and exit. no other output is generated\n");
+}
+
 void yyerror(const char *s) {
 	printf("Erreur à la ligne %d colonne %d!\n", lineno, charno);
 	printf("%s\n", text_line);
@@ -418,6 +426,8 @@ int main(int argc, char** argv) {
 		printTree(root);
 	if(opts.st)
 		printTable();
+	if(opts.help)
+		printHelp();
 
 	return ret_value;
 }

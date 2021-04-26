@@ -53,7 +53,7 @@ void addVarAux(STfunc* stfunc, const char *name, const char *type, int lineno){
 		return;
     if (++(stfunc->STsize) > STmax) {
         printf("too many variables near line %d\n", lineno);
-        exit(EXIT_FAILURE);
+		exit(3);
     }
 	entry = &(stfunc->symbolTable[stfunc->STsize - 1]);
     strcpy(entry->name, name);
@@ -127,7 +127,7 @@ void add_header(Node* func){
 
 void create_ST_aux(Node *tree){
 	switch(tree->kind){
-		case EnTete: 
+		case Header: 
 			add_header(tree); break;
 		case VarDeclList: 
 			add_identifier(tree); break;

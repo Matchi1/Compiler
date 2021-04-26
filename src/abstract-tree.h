@@ -5,26 +5,26 @@
 typedef enum {
   Program,
   VarDeclList,
-  FuncDeclList,
-  DeclFunc,
+  VarsDecl,
   TypeDeclList,
   TypeDecl,
-  EnTete,
+  FuncDeclList,
+  FuncDecl,
+  InstrList,
+  Instr,
+  ExprList,
+  Expr,
+  Header,
   IntLiteral,
   CharLiteral,
   Identifier,
   StructType,
   Type,
-  Corps,
-  ListExp,
-  Expr,
-  FunctionCall,
+  Body,
+  FuncCall,
   StructField,
-  ListInstr,
-  Instr,
   Bloc,
-  TypesVars,
-  DeclVars
+  TypesVars
 
   /* and allother node labels */
   /* The list must coincide with the strings in abstract-tree.c */
@@ -49,14 +49,14 @@ typedef enum {
 } Op;
 
 typedef enum {
-	Affect,
+	Asign,
 	Reade,
 	Readc,
 	Print,
 	If,
 	IfElse,
 	While,
-	Vide,
+	Void,
 	Return
 } InstrType;
 
