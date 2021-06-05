@@ -18,11 +18,15 @@ void variables(int a, char b){
 
 int main(void)  {
 	int c, d;
+	char letter;
+	struct hello yo;
 	1&&16==(-2+5)/(2*1)+(101+2-3+6)/(1+2-3+7);
 	b=r1*r2;
-	b.hello=1;
 	punct='.';
-	variables(1+1+1+1);
-  b;
+	yo.t1 = 1;
+	reade(c);
+	readc(d);
+	variables(1+1+1+1, letter);
+  	b;
 	return b;
 }

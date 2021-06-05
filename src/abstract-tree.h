@@ -24,7 +24,9 @@ typedef enum {
   FuncCall,
   StructField,
   Bloc,
-  TypesVars
+  TypesVars,
+  GlobalDecl,
+  StructDecl
 
   /* and allother node labels */
   /* The list must coincide with the strings in abstract-tree.c */
@@ -57,13 +59,14 @@ typedef enum {
 	IfElse,
 	While,
 	Void,
-	Return
+	Return,
+	Exp
 } InstrType;
 
 typedef struct Node {
   Kind kind;
   union {
-    int integer;
+    int integer, type;
 	InstrType instruction;
 	Op op;
     char character;
@@ -78,6 +81,7 @@ void addSibling(Node *node, Node *sibling);
 void addChild(Node *parent, Node *child);
 void deleteTree(Node*node);
 void printTree(Node *node);
+void print_kind(Node *node);
 
 #define FIRSTCHILD(node) node->firstChild
 #define SECONDCHILD(node) node->firstChild->nextSibling

@@ -12,12 +12,12 @@ PARSER=parser
 SRC_PATH = src/
 OBJ_PATH = obj/
 BIN_PATH = bin/
-OBJ_FILES = $(PARSER).tab.o lex.yy.o abstract-tree.o decl-var.o Option.o
+OBJ_FILES = $(PARSER).tab.o lex.yy.o abstract-tree.o decl-var.o Option.o verif_type.o generate_code.o
 EXEC = tpcc
 CURRENT_DIR=$(notdir $(shell pwd))
-ZIP_FILE = Compiler_L3_CHAN_ARAVINDAN.zip
 PREVIEW = ProjetCompilationL3_CHAN_ARAVINDAN
-TAR_FILE = ProjetCompilationL3_CHAN_ARAVINDAN.tar.gz
+ZIP_FILE = $(PREVIEW).zip
+TAR_FILE = $(PREVIEW).tar.gz
 
 all: $(EXEC) clean
 
@@ -43,6 +43,12 @@ decl-var.o: $(SRC_PATH)decl-var.c
 Option.o: $(SRC_PATH)Option.c
 	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
 
+verif_type.o: $(SRC_PATH)verif_type.c
+	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
+
+generate_code.o: $(SRC_PATH)generate_code.c
+	$(CC) -o $(OBJ_PATH)$@ -c $< $(CFLAGS)
+
 %.o: %.c
 	@echo Compile all the C files necessary for the execution file
 	$(CC) -o $(OBJ_PATH)$@ -c $(SRC_PATH)$< $(CFLAGS)
@@ -55,14 +61,18 @@ clean:
 
 mrproper: clean
 	rm -f $(BIN_PATH)*
-	rm -f $(TAR_FILE) $(ZIP_FILE) *.log
+	rm -rf $(TAR_FILE) $(ZIP_FILE) *.log $(PREVIEW) 
+	rm -rf $(ZIP_FILE) $(TAR_FILE)
 
-copy:
+# Make a clean copy of the project
+copy: mrproper
 	mkdir $(PREVIEW)
-	rsync -av . $(PREVIEW) --exclude .git --exclude *.odt --exclude .gitignore
+	rsync -av . $(PREVIEW) --exclude .git --exclude *.odt --exclude .gitignore --exclude $(PREVIEW)
 
-zip:
-	cd ..; zip -r $(CURRENT_DIR)/$(ZIP_FILE) $(CURRENT_DIR) -x '*.git*' -x '.gitignore' -x '*.odt*'
+# create an zip format archive
+zip: copy
+	zip -r $(PREVIEW).zip $(PREVIEW)
 
-tar:
-	cd ..; tar -cvf $(CURRENT_DIR)/$(TAR_FILE) $(CURRENT_DIR)
+# create an tar format archive
+tar: copy
+	tar -cvf $(PREVIEW).tar.gz $(PREVIEW)

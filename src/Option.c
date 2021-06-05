@@ -6,6 +6,7 @@
 void init_options(Options* opts){
 	opts->tree = 0;
 	opts->st = 0;
+	opts->help = 0;
 }
 
 /*

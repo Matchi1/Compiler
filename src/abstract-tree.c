@@ -27,7 +27,9 @@ static const char *StringFromKind[] = {
   "FuncCall",
   "StructField",
   "Bloc",
-  "TypesVars"
+  "TypesVars",
+  "GlobalDecl",
+  "StructDecl"
   
   /* and all other node labels */
   /* The list must coincide with the enum in abstract-tree.h */
@@ -60,11 +62,12 @@ static const char *StringFromInstrType[] = {
 	"IfElse",
 	"While",
 	"",
-	"Return"
+	"Return",
+	"Exp"
 };
 
 Node *makeNode(Kind kind) {
-  Node *node = malloc(sizeof(Node));
+  Node *node = (Node*)malloc(sizeof(Node));
   if (!node) {
     printf("Run out of memory\n");
     exit(1);
@@ -73,6 +76,10 @@ Node *makeNode(Kind kind) {
   node-> firstChild = node->nextSibling = NULL;
   node->lineno=lineno;
   return node;
+}
+
+void print_kind(Node *node){
+	printf("%s\n", StringFromKind[node->kind]);
 }
 
 void addSibling(Node *node, Node *sibling) {

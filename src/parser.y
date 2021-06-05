@@ -17,6 +17,7 @@
 	#include "decl-var.h"
 	#include "verif_type.h"
 	#include "Option.h"
+	#include "generate_code.h"
 }
 
 %union {
@@ -40,7 +41,7 @@
 %type <node> DeclVars Declarateurs TypesVars DeclChamps DeclChampsAux Prog
 %type <node> DeclFoncts DeclFonct Corps Parametres ListTypVar EnTeteFonct
 %type <node> Exp TB FB M E T F LValue LValueAux
-%type <node> Type ListExp Arguments SuiteInstr Instr SaveIdent CallName SaveOp
+%type <node> Type ListExp Arguments SuiteInstr Instr SaveIdent CallName SaveOp SAVETYPE
 
 %%
 
@@ -55,21 +56,26 @@ Prog:  TypesVars DeclFoncts {
     ;
 TypesVars:
        TypesVars Type Declarateurs ';' {
-		$1 = makeNode(VarDeclList);
+		$1 = makeNode(GlobalDecl);
 		addChild($1, $2);
 		addChild($1, $3);
 		addChild($$, $1);
 	   }
-    |  TypesVars STRUCT IDENT '{' DeclChamps '}' ';' {
-		$1 = makeNode(StructType);
-		strcpy($1->u.identifier, yylval.type);
-		addChild($1, $5);
+    |  TypesVars STRUCT IDENT SAVETYPE '{' DeclChamps '}' ';' {
+		$1 = $4;
+		addChild($1, $6);
 		addChild($$, $1);
 	}
     |  %empty {
 		$$ = makeNode(TypesVars);
 	}
     ;
+SAVETYPE:
+		%empty {
+			$$ = makeNode(StructDecl);
+			strcpy($$->u.identifier, ident);
+		}
+	;
 Type:
 	  SIMPLETYPE {
 		$$ = makeNode(Type);
@@ -79,7 +85,7 @@ Type:
 	| STRUCT IDENT {
 		$$ = makeNode(Type);
 		$$->lineno = lineno;
-		strcpy($$->u.identifier, yylval.type);
+		strcpy($$->u.identifier, ident);
 	  }
     ;
 Declarateurs:
@@ -99,8 +105,8 @@ Declarateurs:
 DeclChamps :
        DeclChamps SIMPLETYPE DeclChampsAux Declarateurs ';' {
 	   		$$ = makeNode(VarDeclList);
-			addChild($$, $4);
 			addChild($$, $3);
+			addChild($$, $4);
 			addSibling($$, $1);
 	   }
     |  SIMPLETYPE DeclChampsAux Declarateurs ';' {
@@ -244,7 +250,7 @@ Instr:
     |  Exp ';'	{
 		$$ = makeNode(Instr);
 		$$->lineno = lineno;
-		$$->u.instruction = Void;
+		$$->u.instruction = Exp;
 		addChild($$, $1);
 	}
     |  RETURN Exp ';' {
@@ -334,35 +340,30 @@ F   :  ADDSUB SaveOp F {
 SaveOp:
 	   %empty {
 		$$ = makeNode(Expr);
-		$$->lineno = lineno;
 		$$->u.op = yylval.op;
 	}
 	;
 CallName:
 	   %empty {
 	   		$$ = makeNode(FuncCall);
-			$$->lineno = lineno;
 			strcpy($$->u.identifier, ident);
 	   }
 LValue:
        IDENT {
 		$$ = makeNode(Identifier);
-		$$->lineno = lineno;
 		strcpy($$->u.identifier, ident);
 	}
     |  IDENT LValueAux '.' IDENT {
        Node* node = makeNode(Identifier);
        strcpy(node->u.identifier, ident);
        $$ = makeNode(StructField); 
-		$$->lineno = lineno;
-       addChild($$, node);
        addChild($$, $2);
+       addChild($$, node);
 	}
     ;
 LValueAux:
 	   %empty	{
        $$ = makeNode(Identifier);  
-	   $$->lineno = lineno;
        strcpy($$->u.identifier, ident);
     }
 Arguments:
@@ -428,6 +429,7 @@ int main(int argc, char** argv) {
 		printTable();
 	if(opts.help)
 		printHelp();
-
+	check_semantic_error(root);
+	generate_code();
 	return ret_value;
 }

@@ -3,11 +3,11 @@
 
 #include "abstract-tree.h"
 
-/*
- * Return : - -1 semantic error
- * 			- 0 int 
- * 			- 1 char
- * */
-int verif_expr(Node *node);
+#define SEM_ERR -1
+#define VOID_TYPE 0
+#define INT_TYPE 1
+#define CHAR_TYPE 2
+
+void check_semantic_error(Node* root);
 
 #endif

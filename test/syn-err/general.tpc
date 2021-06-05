@@ -1,0 +1,38 @@
+/*
+Test des tokens suivants:
+	- TYPE
+	- IDENT
+	- READE
+	- READC
+	- RETURN 
+	- ADDSUB
+	- DIVSTAR
+*/
+// #include <stdio.h>
+// #include <stdlib.h>
+
+struct test_struct{
+  int hello;
+  int bye;
+};
+
+struct test_struct;
+
+test_struct_function(struct test_struct ts, struct test_struct ts2) {
+    if(test_struct_function(ts, ts2)) {
+        return ts;
+    }
+    return ts2;
+}
+
+int main(void){
+	int value;
+	double value2;
+	int result, result2;
+
+	reade(&value);
+	readc(&value2);
+	result2 = (result = value * value + value2);
+	
+	return 0;	
+}
