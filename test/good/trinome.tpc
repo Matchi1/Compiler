@@ -29,7 +29,6 @@ int main(void) {
 int trinome(int a,int b, int c) {
     int d;
     int s;
-    d=b*b-4*a*c;
     if (d>=0) {
         s=sqrt(d);
         r1=(-b+s)/(2*a);
@@ -37,8 +36,4 @@ int trinome(int a,int b, int c) {
         return 1;
     }
     return 0;
-}
-
-int valeur(int a, int b, int c, int x) {
-    return a*x*x+b*x+c;
 }

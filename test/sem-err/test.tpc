@@ -1,0 +1,32 @@
+/* test-table-symboles.tpc */
+
+/* Test file for simplified translator of a declaration of variables in C */
+int r1,b,s,c,r2 ;
+int b;
+char letter, digit, punct;
+
+struct hello {
+	int t1, t2, t3;
+	char b1;
+};
+
+void variables(int a, char b){
+	int r1,b,s,c,r2 ;
+	int b;
+	char letter, digit, punct;
+}
+
+int main(void)  {
+	int c, d;
+	char letter;
+	struct hello yo;
+	1&&16==(-2+5)/(2*1)+(101+2-3+6)/(1+2-3+7);
+	b=r1*r2;
+	punct='.';
+	yo.t1 = 1;
+	reade(c);
+	readc(d);
+	variables(1+1+1+1, letter);
+  	b;
+	return b;
+}

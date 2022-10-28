@@ -2,8 +2,7 @@
 
 /* Test file for simplified translator of a declaration of variables in C */
 int r1,b,s,c,r2 ;
-int b;
-char letter, digit, punct;
+char punct;
 
 struct hello {
 	int t1, t2, t3;
@@ -12,7 +11,6 @@ struct hello {
 
 void variables(int a, char b){
 	int r1,b,s,c,r2 ;
-	int b;
 	char letter, digit, punct;
 }
 
@@ -24,8 +22,9 @@ int main(void)  {
 	b=r1*r2;
 	punct='.';
 	yo.t1 = 1;
+	yo.b1 = '.';
 	reade(c);
-	readc(d);
+	reade(d);
 	variables(1+1+1+1, letter);
   	b;
 	return b;

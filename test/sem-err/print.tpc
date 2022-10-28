@@ -1,0 +1,12 @@
+int a, b;
+
+char next(char offset) {
+   return 'B';
+}
+
+int main(void)  {
+	int a;
+	a='c';
+	b=24;
+	return 0;
+}

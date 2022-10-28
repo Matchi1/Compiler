@@ -1,0 +1,42 @@
+int a;
+int b;
+
+char next(char offset) {
+   return 'B';
+}
+
+int main(void)  {
+   a=12;
+   b=24;
+   print(next('A'));
+   print('A');
+   print(a);
+   print(1 == 1);
+   print(32 > 32);
+   print(32 < 32);
+   print(32 >= 32);
+   print(32 <= 32);
+   print(-a);
+   print(!a);
+   print(!12);
+   print('B');
+   print(b);
+   print(b == 24);
+   print((b + 2 * 3 + a * 2));
+   print((b + 2 * 3 + a * 2) + (2 * 3));
+   print((b + 2 * 3 + a * 2) + (2 * 3) * 2);
+   print((b + 2 * 3 + a * 2) + (2 * 3) * (b - 14));
+   print(a + b);
+   print(a - b);
+   print(b - a);
+   print(a * b);
+   print((24 + 2 * 3 + 12 * 2));
+   print((24 + 2 * 3 + 12 * 2) % 2 + 1);
+   
+   print((24 + 2 * 3 + 12 * 2) % (2 + 1));
+   print(a % 2);
+   print(a % 3);
+   print(C1 * 878);
+   print(C2);
+   return 0;
+}

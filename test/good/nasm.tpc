@@ -1,0 +1,19 @@
+/* gen-code-types.tpc /
+
+   / Test file for TPC */
+int somme,produit,quotient,reste,difference ;
+char letter, digit, punct;
+int p_compteur;
+int indice, p_indice;
+
+int integer(int b, char r){
+	return 45;
+}
+
+int main(int argc, char argv) {
+	int a, b, c;
+	char k, v, p;
+	a = (24 / 12) * 5 + 3 - 2;
+	print(8);
+	return integer(8, 'r');
+}

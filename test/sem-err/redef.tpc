@@ -1,0 +1,9 @@
+int main(void){
+	int hi;
+	char hello;
+	char okay;
+	char no;
+	char yes;
+	char hi;
+	return 0;
+}
