@@ -21,7 +21,7 @@ int var_already_in(STfunc *stfunc, const char *name, int lineno){
 	for(i = 0; i < stfunc->STsize; i++){
 		if(!strcmp(stfunc->STvariables[i].name, name)){
 			printf("semantic error, redefinition of variable %s near line %d\n", name, lineno);
-			return 1;
+			exit(2);
 		}
 	}
 	return 0;
@@ -36,20 +36,35 @@ int nb_global_var(){
 }
 
 char* type(const char* var_name, const char* func_name){
-	int i;
-	STfunc *st = stfunc(func_name);
-	for(i = 0; i < st->STsize; i++){
-		if(strcmp(st->STvariables[i].name, var_name) == 0)
-			return st->STvariables[i].type;
-	}
-	// verify in global variables
-	st = st_global();
-	for(i = 0; i < st->STsize; i++){
-		if(strcmp(st->STvariables[i].name, var_name) == 0){
-			return st->STvariables[i].type;
+	int i, j;
+	STfunc *st[] = { stfunc(func_name), st_global() };
+	for(i = 0; i < 2; i++){
+		for(j = 0; j < st[i]->STsize; j++){
+			if(strcmp(st[i]->STvariables[j].name, var_name) == 0)
+				return st[i]->STvariables[j].type;
 		}
 	}
 	return NULL;
+}
+
+int index_var(const char* func_name, const char* var){
+	STfunc *stf = stfunc(func_name);
+	int i;
+	for(i = 0; i < stf->STsize; i++){
+		if(!strcmp(stf->STvariables[i].name, var))
+			return i;
+	}
+	return -1;
+}
+
+int is_global_var(const char* name){
+	STfunc *stg = st_global();	
+	int i;
+	for(i = 0; i < stg->STsize; i++){
+		if(!strcmp(stg->STvariables[i].name, name))
+			return 1;
+	}
+	return 0;
 }
 
 /**
@@ -166,9 +181,10 @@ void add_structure(Node* struct_decl){
 int func_already_in(const char *name, int lineno){
 	int i;
 	for(i = 0; i < STfuncSize; i++){
-		if(!strcmp(STFunctions[i].header.name, name)){
+		if(strcmp(STFunctions[i].header.name, "global") 
+				&& !strcmp(STFunctions[i].header.name, name)){
 			printf("semantic error, redefinition of function %s near line %d\n", name, lineno);
-			return 1;
+			exit(2);
 		}
 	}
 	return 0;
@@ -201,7 +217,7 @@ void addFunc(const char *name, const char *type, int lineno){
 		return;
     if (++STfuncSize > MAXFUNCS) {
         printf("too many variables near line %d\n", lineno);
-        exit(EXIT_FAILURE);
+        exit(3);
     }
     strcpy(STFunctions[STfuncSize - 1].header.name, name);
     strcpy(STFunctions[STfuncSize - 1].header.type, type);
@@ -293,28 +309,26 @@ void add_header(Node* header){
 		add_arg_list(SECONDCHILD(header), current_func);
 }
 
-void create_ST_aux(Node *tree){
-	switch(tree->kind){
-		case Header: 
-			add_header(tree); break;
-		case VarDeclList: 
-			add_identifier(tree); break;
-		case TypeDeclList:
-			add_identifier(tree); break;
-		case GlobalDecl: 
-			strcpy(current_func, GLOBAL);
-			addFunc(GLOBAL, "void", tree->lineno); break;
-		case StructDecl:
-			add_structure(tree); break;
-		default: break;
-	}
-}
-
 void create_ST(Node *tree){
 	Node *child;	
-	create_ST_aux(tree);
-	for(child = tree->firstChild; child != NULL; child = child->nextSibling)
-		create_ST(child);
+	for(child = tree->firstChild; child != NULL; child = child->nextSibling){
+		switch(child->kind){
+			case Header: 
+				add_header(child); break;
+			case StructDecl:
+				add_structure(child); break;
+			case VarDeclList: 
+				add_identifier(child); break;
+			case TypeDeclList:
+				add_identifier(child); break;
+			case GlobalDecl: 
+				strcpy(current_func, GLOBAL);
+				addFunc(GLOBAL, "void", child->lineno);
+				add_identifier(child); break;
+			default: 
+				create_ST(child); break;
+		}
+	}
 }
 
 STfunc* stfunc(const char *func_name){

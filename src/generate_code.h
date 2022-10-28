@@ -1,6 +1,8 @@
 #ifndef __GENERATE_CODE__
 #define __GENERATE_CODE__
 
-void generate_code();
+#include "abstract-tree.h"
+
+void generate_code(Node *root);
 
 #endif

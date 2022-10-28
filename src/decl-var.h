@@ -37,5 +37,7 @@ char* get_arg_type_index(int index, const char* func_name);
 char* get_func_type(const char *func_name);
 int get_size_argument(const char* func_name);
 int nb_global_var();
+int is_global_var(const char* name);
+int index_var(const char* func_name, const char* var);
 
 #endif 

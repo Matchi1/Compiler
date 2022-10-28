@@ -430,6 +430,7 @@ int main(int argc, char** argv) {
 	if(opts.help)
 		printHelp();
 	check_semantic_error(root);
-	generate_code();
+	printf("NO SEMANTIC ERROR\n");
+	generate_code(root);
 	return ret_value;
 }

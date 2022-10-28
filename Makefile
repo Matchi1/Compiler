@@ -76,3 +76,8 @@ zip: copy
 # create an tar format archive
 tar: copy
 	tar -cvf $(PREVIEW).tar.gz $(PREVIEW)
+
+# compile nasm code
+nasm:
+	nasm -f elf64 _anonymous.asm -o $(OBJ_PATH)_anonymous.o
+	gcc -o _anonymous -nostartfiles -no-pie $(OBJ_PATH)_anonymous.o

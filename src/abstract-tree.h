@@ -82,6 +82,7 @@ void addChild(Node *parent, Node *child);
 void deleteTree(Node*node);
 void printTree(Node *node);
 void print_kind(Node *node);
+void print_op(Node *node);
 
 #define FIRSTCHILD(node) node->firstChild
 #define SECONDCHILD(node) node->firstChild->nextSibling

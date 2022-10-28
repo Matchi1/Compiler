@@ -11,6 +11,7 @@ void verif_argument(Node *ExprList, const char *func_name);
 
 void print_semantic_error(int lineno){
 	printf("semantic error: line %d\n", lineno);
+	exit(3);
 }
 
 int type_diff(int expected_type, int type){
@@ -38,7 +39,6 @@ int verif_expr(Node *node, int expected_type, const char *func_name){
 			case FuncCall:
 				verif_argument(FIRSTCHILD(browse), browse->u.identifier);
 				current_type = string_to_type(get_func_type(browse->u.identifier)); break;
-
 			default: break;
 		}
 		if(expected_type == SEM_ERR)
@@ -153,10 +153,8 @@ void verif_nb_arguments(Node *Expr, int lineno, int expected_nb_args){
 	int nb_args = 0;
 	for(; Expr != NULL; Expr = Expr->nextSibling)
 		nb_args++;
-	if(expected_nb_args != nb_args){
+	if(expected_nb_args != nb_args)
 		print_semantic_error(lineno);
-		// exit(EXIT_FAILURE);
-	}
 }
 
 void verif_argument(Node *ExprList, const char *func_name){
@@ -169,10 +167,8 @@ void verif_argument(Node *ExprList, const char *func_name){
 		expected_type = string_to_type(get_arg_type_index(i, func_name));
 		no_error = verif_expr(Expr, expected_type, func_name);
 		i--;
-		if(no_error == -1){
+		if(no_error == -1)
 			print_semantic_error(Expr->lineno);
-			// exit(EXIT_FAILURE);
-		}
 	}
 }
 

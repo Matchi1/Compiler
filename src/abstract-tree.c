@@ -140,3 +140,7 @@ void printTree(Node *node) {
   }
   depth--;
 }
+
+void print_op(Node *node){
+	printf("%s\n", StringFromOp[node->u.op]);
+}
